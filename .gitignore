@@ -1,0 +1,22 @@
+# Next.js & build output
+.next
+node_modules
+dist
+build
+coverage
+*.tsbuildinfo
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment secrets (NEVER commit secrets!)
+.env
+.env*.local
+.env.local
+
+# Temp scratch files
+scratch/
+test/

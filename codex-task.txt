@@ -1,0 +1,68 @@
+Build a compact demo widget for wig try-on.
+
+Project goal:
+Create a small standalone widget, not a full-page layout. The widget is only a demo prototype for now.
+
+UI requirements:
+- Compact card width around 480–560px
+- Title: "Примерка парика"
+- Show 3 selectable wig options from local files:
+  - /wigs/wig-1.jpeg
+  - /wigs/wig-2.jpeg
+  - /wigs/wig-3.jpeg
+- Show one upload button: "Загрузить фото"
+- Show one main action button: "Примерить парик"
+- Show result block below the buttons
+- Disable the main button until a wig is selected and a photo is uploaded
+- Show loading state while processing
+- Keep the UI minimal, clean, modern, compact, and production-style
+
+Behavior:
+- User selects one wig
+- User uploads one selfie
+- User clicks "Примерить парик"
+- Result appears below
+
+Important:
+- Do not build a huge landing page
+- Do not make a hero section
+- Do not make a full-screen layout
+- Make one compact embedded widget only
+
+Tech stack:
+- Next.js App Router
+- React
+- Tailwind CSS
+
+Architecture:
+- Create reusable components
+- Use local wig data
+- Prepare API integration point, but keep mock mode active for now
+- The app must work even without a real external API endpoint
+- Add clear placeholder comments where a real API call will be inserted later
+
+Files and structure:
+- Use wig images from /public/wigs/
+- Add a simple local data file for the 3 wigs
+- Add one API route for future integration:
+  - /app/api/generate/route.ts
+- Create a main widget component
+- Keep the code clean and simple for a beginner
+
+Generation logic notes:
+- The final real version will use:
+  - one user selfie
+  - one selected wig reference
+  - universal prompt from universal-prompt.txt
+- For now, implement mock response logic with a short delay
+- Structure the code so the real API can be connected later with minimal edits
+
+Button text:
+- "Примерить парик"
+
+Result area:
+- Place it directly below the buttons
+- Show uploaded selfie as preview for now in mock mode
+- Add a note in code where the real generated image should appear later
+
+Please generate the full project code structure for this demo widget.
