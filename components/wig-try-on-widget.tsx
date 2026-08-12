@@ -6,8 +6,7 @@ import { CategorySelector } from "@/components/category-selector";
 import { StepProgressHeader } from "@/components/step-progress-header";
 import { CatalogPagination } from "@/components/catalog-pagination";
 import { ResultPanel } from "@/components/result-panel";
-import { SelfieGuideCard } from "@/components/selfie-guide-card";
-import { SelfieUploadControls } from "@/components/selfie-upload-controls";
+import { SelfieHeaderSection } from "@/components/selfie-header-section";
 import { WigOptionCard } from "@/components/wig-option-card";
 import { CATALOG_API_ROUTE, GENERATE_API_ROUTE } from "@/lib/app-config";
 import {
@@ -258,14 +257,13 @@ export function WigTryOnWidget() {
             Примерка парика
           </h1>
           <p className="text-sm font-light text-slate-500 sm:text-[15px]">
-            Загрузите селфи и выберите парик из каталога для примерки с ИИ
+            Загрузите селфи и выберите парик из каталога для онлайн-примерки
           </p>
         </header>
 
-        {/* Step 1: Selfie Upload Section */}
-        <div className="grid gap-4 lg:grid-cols-[minmax(0,1.1fr)_minmax(340px,0.9fr)] lg:gap-5 animate-fade-in-up" style={{ animationDelay: "100ms" }}>
-          <SelfieGuideCard />
-          <SelfieUploadControls
+        {/* Step 1: Unified Selfie Upload & Guide Header */}
+        <div className="animate-fade-in-up" style={{ animationDelay: "100ms" }}>
+          <SelfieHeaderSection
             fileName={selfieFile?.name ?? null}
             hasFile={Boolean(selfieFile)}
             disabled={isLoading}
