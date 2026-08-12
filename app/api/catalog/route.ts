@@ -20,6 +20,11 @@ const FALLBACK_IMAGES = [
   "/wigs/ruzhie/ruzhie-1.png"
 ];
 
+// Simple in-memory cache to make catalog load INSTANT (5 min TTL)
+let categoriesCache: { data: any[]; timestamp: number } | null = null;
+const productCache = new Map<string, { data: any[]; timestamp: number }>();
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
 function getFallbackImage(productId: number | string): string {
   const idNum = typeof productId === "number" ? productId : parseInt(productId, 10) || 0;
   const index = Math.abs(idNum) % FALLBACK_IMAGES.length;
@@ -34,7 +39,7 @@ async function getCategoryProductCount(categoryId: string | number): Promise<num
         Authorization: `Bearer ${OPENCART_API_KEY}`,
         "Content-Type": "application/json"
       },
-      cache: "no-store"
+      next: { revalidate: 300 }
     });
     if (!response.ok) return 0;
     const json = await response.json();
@@ -50,13 +55,23 @@ export async function GET(request: Request) {
 
   try {
     if (categoryId) {
+      const now = Date.now();
+      const cached = productCache.get(categoryId);
+      if (cached && now - cached.timestamp < CACHE_TTL_MS) {
+        return NextResponse.json({
+          success: true,
+          total: cached.data.length,
+          data: cached.data
+        });
+      }
+
       const url = `${OPENCART_API_BASE_URL}?route=api/tryon/products&category_id=${categoryId}&page=1&limit=100`;
       const response = await fetch(url, {
         headers: {
           Authorization: `Bearer ${OPENCART_API_KEY}`,
           "Content-Type": "application/json"
         },
-        cache: "no-store"
+        next: { revalidate: 300 }
       });
 
       if (!response.ok) {
@@ -89,6 +104,8 @@ export async function GET(request: Request) {
         };
       });
 
+      productCache.set(categoryId, { data: products, timestamp: Date.now() });
+
       return NextResponse.json({
         success: true,
         total: json.total || products.length,
@@ -97,13 +114,22 @@ export async function GET(request: Request) {
         data: products
       });
     } else {
+      const now = Date.now();
+      if (categoriesCache && now - categoriesCache.timestamp < CACHE_TTL_MS) {
+        return NextResponse.json({
+          success: true,
+          total: categoriesCache.data.length,
+          data: categoriesCache.data
+        });
+      }
+
       const url = `${OPENCART_API_BASE_URL}?route=api/tryon/categories`;
       const response = await fetch(url, {
         headers: {
           Authorization: `Bearer ${OPENCART_API_KEY}`,
           "Content-Type": "application/json"
         },
-        cache: "no-store"
+        next: { revalidate: 300 }
       });
 
       if (!response.ok) {
@@ -122,7 +148,7 @@ export async function GET(request: Request) {
         );
       }
 
-      // Check product count in parallel for all categories and filter out empty ones
+      // Filter out empty categories
       const categoryCounts = await Promise.all(
         json.data.map(async (c: any) => {
           const count = await getCategoryProductCount(c.category_id);
@@ -140,6 +166,8 @@ export async function GET(request: Request) {
           image: c.image || null,
           href: c.href || null
         }));
+
+      categoriesCache = { data: nonEmptyCategories, timestamp: Date.now() };
 
       return NextResponse.json({
         success: true,
