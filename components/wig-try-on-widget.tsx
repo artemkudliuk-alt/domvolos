@@ -24,7 +24,7 @@ type GenerateResponse = {
   generatedImageUrl: string | null;
 };
 
-const PRODUCTS_PER_PAGE = 8;
+const PRODUCTS_PER_PAGE = 6;
 
 function toRussianErrorMessage(message: string) {
   if (message.includes("Не выбран парик")) {
@@ -238,7 +238,7 @@ export function WigTryOnWidget() {
 
   return (
     <section className="relative min-h-screen w-full">
-      {/* 100% Fixed Viewport Progress Header (outside of any animated/transformed containers) */}
+      {/* 100% Fixed Viewport Progress Header */}
       <StepProgressHeader
         hasSelfie={Boolean(selfieFile)}
         hasWig={Boolean(selectedWig)}
@@ -252,16 +252,17 @@ export function WigTryOnWidget() {
         <div className="absolute right-[-150px] top-[8%] h-[340px] w-[340px] rounded-full bg-slate-200/35 blur-3xl animate-float-ambient-reverse" />
       </div>
 
-      <div className="mx-auto flex min-h-screen w-full max-w-[1160px] flex-col gap-5 px-4 py-8 sm:gap-6 sm:px-6 sm:py-10 lg:gap-7 lg:px-8 lg:py-12 xl:px-10">
-        <header className="space-y-4 pt-12 sm:pt-14 text-center animate-fade-in-up">
-          <h1 className="text-[38px] font-extralight tracking-[-0.055em] text-ink sm:text-[48px] lg:text-[56px]">
+      <div className="mx-auto flex min-h-screen w-full max-w-[1180px] flex-col gap-6 px-4 py-8 sm:gap-7 sm:px-6 sm:py-10 lg:gap-8 lg:px-8 lg:py-12 xl:px-10">
+        <header className="space-y-3 pt-12 sm:pt-14 text-center animate-fade-in-up">
+          <h1 className="text-[38px] font-extralight tracking-[-0.055em] text-ink sm:text-[48px] lg:text-[54px]">
             Примерка парика
           </h1>
           <p className="text-sm font-light text-slate-500 sm:text-[15px]">
-            Выберите парик из каталога магазина и добавьте фото для примерки
+            Загрузите селфи и выберите парик из каталога для примерки с ИИ
           </p>
         </header>
 
+        {/* Step 1: Selfie Upload Section */}
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1.1fr)_minmax(340px,0.9fr)] lg:gap-5 animate-fade-in-up" style={{ animationDelay: "100ms" }}>
           <SelfieGuideCard />
           <SelfieUploadControls
@@ -272,16 +273,17 @@ export function WigTryOnWidget() {
           />
         </div>
 
-        <section
-          ref={catalogSectionRef}
-          className="rounded-[32px] border border-white/70 bg-white/80 p-5 shadow-[0_18px_48px_rgba(17,24,39,0.06)] backdrop-blur transition-all duration-300 hover:shadow-[0_22px_56px_rgba(17,24,39,0.08)] sm:p-6 lg:p-7 animate-fade-in-up"
-          style={{ animationDelay: "200ms" }}
-        >
-          <div className="space-y-5">
-            <div className="space-y-3">
+        {/* UNIFIED STUDIO WORKSPACE: Left = Wig Catalog, Right = Interactive Result Studio */}
+        <div className="grid gap-6 lg:grid-cols-12 lg:gap-7 animate-fade-in-up" style={{ animationDelay: "200ms" }}>
+          {/* Left Column: Wig Catalog (7 Cols) */}
+          <section
+            ref={catalogSectionRef}
+            className="lg:col-span-7 flex flex-col justify-between rounded-[34px] border border-white/75 bg-white/80 p-5 shadow-[0_18px_48px_rgba(17,24,39,0.06)] backdrop-blur-xl sm:p-6"
+          >
+            <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-[20px] font-light tracking-[-0.03em] text-ink sm:text-[24px]">
-                  Выберите товар ({products.length})
+                  Каталог париков ({products.length})
                 </h2>
                 {isProductsLoading && (
                   <span className="text-xs text-slate-400 animate-pulse">
@@ -303,24 +305,22 @@ export function WigTryOnWidget() {
                   onSelect={handleSelectCategory}
                 />
               )}
-            </div>
 
-            {isProductsLoading ? (
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:gap-4">
-                {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                  <div
-                    key={i}
-                    className="h-[260px] rounded-[24px] bg-slate-100 animate-pulse"
-                  />
-                ))}
-              </div>
-            ) : products.length === 0 ? (
-              <div className="py-12 text-center text-slate-400 text-sm">
-                В этой категории пока нет доступных товаров.
-              </div>
-            ) : (
-              <>
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:gap-4">
+              {isProductsLoading ? (
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                  {[1, 2, 3, 4, 5, 6].map((i) => (
+                    <div
+                      key={i}
+                      className="h-[240px] rounded-[24px] bg-slate-100 animate-pulse"
+                    />
+                  ))}
+                </div>
+              ) : products.length === 0 ? (
+                <div className="py-12 text-center text-slate-400 text-sm">
+                  В этой категории пока нет доступных товаров.
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                   {paginatedProducts.map((wig) => (
                     <WigOptionCard
                       key={wig.id}
@@ -330,7 +330,11 @@ export function WigTryOnWidget() {
                     />
                   ))}
                 </div>
+              )}
+            </div>
 
+            {products.length > 0 && !isProductsLoading && (
+              <div className="mt-4 pt-2">
                 <CatalogPagination
                   currentPage={currentPage}
                   totalPages={totalPages}
@@ -338,22 +342,26 @@ export function WigTryOnWidget() {
                   pageSize={PRODUCTS_PER_PAGE}
                   onPageChange={handlePageChange}
                 />
-              </>
+              </div>
             )}
-          </div>
-        </section>
+          </section>
 
-        <ResultPanel
-          isLoading={isLoading}
-          resultImageUrl={resultImageUrl}
-          selectedWig={selectedWig}
-          statusText={statusText}
-          errorText={errorText}
-          isActionDisabled={isSubmitDisabled}
-          onGenerate={handleGenerate}
-        />
+          {/* Right Column: Studio Result Mirror (5 Cols) */}
+          <div className="lg:col-span-5">
+            <ResultPanel
+              isLoading={isLoading}
+              resultImageUrl={resultImageUrl}
+              selectedWig={selectedWig}
+              statusText={statusText}
+              errorText={errorText}
+              isActionDisabled={isSubmitDisabled}
+              onGenerate={handleGenerate}
+            />
+          </div>
+        </div>
       </div>
 
+      {/* Floating Logo Watermark */}
       <div className="pointer-events-none fixed bottom-4 left-4 z-10 opacity-60 mix-blend-multiply sm:bottom-6 sm:left-6">
         <Image
           src="/logo/dom-volos.png"
