@@ -192,13 +192,6 @@ export function WigTryOnWidget() {
 
   const isSubmitDisabled = !selectedWig || !selfieFile || isLoading;
 
-  const currentStep = useMemo(() => {
-    if (resultImageUrl) return 3;
-    if (selfieFile && selectedWig) return 3;
-    if (selfieFile || selectedWig) return 2;
-    return 1;
-  }, [selfieFile, selectedWig, resultImageUrl]);
-
   const handleGenerate = async () => {
     if (!selectedWig || !selfieFile || !selfiePreviewUrl) {
       return;
@@ -244,19 +237,23 @@ export function WigTryOnWidget() {
   };
 
   return (
-    <section className="relative min-h-screen w-full overflow-hidden">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[360px] bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.97),transparent_58%),radial-gradient(circle_at_top_right,rgba(221,232,243,0.5),transparent_34%)]" />
-      <div className="pointer-events-none absolute left-[-140px] top-[16%] h-[320px] w-[320px] rounded-full bg-white/55 blur-3xl animate-float-ambient" />
-      <div className="pointer-events-none absolute right-[-150px] top-[8%] h-[340px] w-[340px] rounded-full bg-slate-200/35 blur-3xl animate-float-ambient-reverse" />
+    <section className="relative min-h-screen w-full">
+      {/* 100% Fixed Viewport Progress Header (outside of any animated/transformed containers) */}
+      <StepProgressHeader
+        hasSelfie={Boolean(selfieFile)}
+        hasWig={Boolean(selectedWig)}
+        hasResult={Boolean(resultImageUrl)}
+      />
+
+      {/* Background Ambient Blobs */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute inset-x-0 top-0 h-[360px] bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.97),transparent_58%),radial-gradient(circle_at_top_right,rgba(221,232,243,0.5),transparent_34%)]" />
+        <div className="absolute left-[-140px] top-[16%] h-[320px] w-[320px] rounded-full bg-white/55 blur-3xl animate-float-ambient" />
+        <div className="absolute right-[-150px] top-[8%] h-[340px] w-[340px] rounded-full bg-slate-200/35 blur-3xl animate-float-ambient-reverse" />
+      </div>
 
       <div className="mx-auto flex min-h-screen w-full max-w-[1160px] flex-col gap-5 px-4 py-8 sm:gap-6 sm:px-6 sm:py-10 lg:gap-7 lg:px-8 lg:py-12 xl:px-10">
-        <header className="space-y-4 pt-10 sm:pt-12 text-center animate-fade-in-up">
-          <StepProgressHeader
-            hasSelfie={Boolean(selfieFile)}
-            hasWig={Boolean(selectedWig)}
-            hasResult={Boolean(resultImageUrl)}
-          />
-
+        <header className="space-y-4 pt-12 sm:pt-14 text-center animate-fade-in-up">
           <h1 className="text-[38px] font-extralight tracking-[-0.055em] text-ink sm:text-[48px] lg:text-[56px]">
             Примерка парика
           </h1>
