@@ -250,7 +250,7 @@ export function WigTryOnWidget() {
       <div className="pointer-events-none absolute right-[-150px] top-[8%] h-[340px] w-[340px] rounded-full bg-slate-200/35 blur-3xl animate-float-ambient-reverse" />
 
       <div className="mx-auto flex min-h-screen w-full max-w-[1160px] flex-col gap-5 px-4 py-8 sm:gap-6 sm:px-6 sm:py-10 lg:gap-7 lg:px-8 lg:py-12 xl:px-10">
-        <header className="space-y-4 pt-1 text-center animate-fade-in-up">
+        <header className="space-y-4 pt-10 sm:pt-12 text-center animate-fade-in-up">
           <StepProgressHeader
             hasSelfie={Boolean(selfieFile)}
             hasWig={Boolean(selectedWig)}
