@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CategorySelector } from "@/components/category-selector";
+import { StepProgressHeader } from "@/components/step-progress-header";
 import { CatalogPagination } from "@/components/catalog-pagination";
 import { ResultPanel } from "@/components/result-panel";
 import { SelfieGuideCard } from "@/components/selfie-guide-card";
@@ -250,20 +251,11 @@ export function WigTryOnWidget() {
 
       <div className="mx-auto flex min-h-screen w-full max-w-[1160px] flex-col gap-5 px-4 py-8 sm:gap-6 sm:px-6 sm:py-10 lg:gap-7 lg:px-8 lg:py-12 xl:px-10">
         <header className="space-y-4 pt-1 text-center animate-fade-in-up">
-          {/* Step Progress Wizard Header */}
-          <div className="mx-auto flex max-w-md items-center justify-center gap-2 rounded-full border border-white/80 bg-white/80 p-1.5 shadow-sm backdrop-blur">
-            <div className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-all ${currentStep === 1 ? "bg-ink text-white shadow-xs" : "text-slate-500"}`}>
-              <span>1</span> Фото
-            </div>
-            <span className="text-slate-300">→</span>
-            <div className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-all ${currentStep === 2 ? "bg-ink text-white shadow-xs" : "text-slate-500"}`}>
-              <span>2</span> Парик
-            </div>
-            <span className="text-slate-300">→</span>
-            <div className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-all ${currentStep === 3 ? "bg-ink text-white shadow-xs" : "text-slate-500"}`}>
-              <span>3</span> Примерка
-            </div>
-          </div>
+          <StepProgressHeader
+            hasSelfie={Boolean(selfieFile)}
+            hasWig={Boolean(selectedWig)}
+            hasResult={Boolean(resultImageUrl)}
+          />
 
           <h1 className="text-[38px] font-extralight tracking-[-0.055em] text-ink sm:text-[48px] lg:text-[56px]">
             Примерка парика
