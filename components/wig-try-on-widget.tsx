@@ -24,7 +24,7 @@ type GenerateResponse = {
   generatedImageUrl: string | null;
 };
 
-const PRODUCTS_PER_PAGE = 6;
+const PRODUCTS_PER_PAGE = 12;
 
 function toRussianErrorMessage(message: string) {
   if (message.includes("Не выбран парик")) {
