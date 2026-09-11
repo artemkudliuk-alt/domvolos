@@ -186,9 +186,29 @@ async function generateWithOpenAI({
   selfieBuffer: Buffer;
   wigBuffer: Buffer;
 }): Promise<{ base64: string; mimeType: string }> {
-  // Create side-by-side composite (Selfie on Left, Wig Reference on Right)
-  const resizedSelfie = await sharp(selfieBuffer).resize(512, 512, { fit: "cover" }).toBuffer();
-  const resizedWig = await sharp(wigBuffer).resize(512, 512, { fit: "contain", background: { r: 255, g: 255, b: 255, alpha: 1 } }).toBuffer();
+  // 1. Auto-orient images to fix iPhone 90° EXIF rotation bug
+  const normalizedSelfie = await sharp(selfieBuffer).rotate().toBuffer();
+  const normalizedWig = await sharp(wigBuffer).rotate().toBuffer();
+
+  // 2. Add smart top headroom padding so tall, voluminous wigs are never cut off at the top
+  const selfieMeta = await sharp(normalizedSelfie).metadata();
+  const sHeight = selfieMeta.height ?? 512;
+  const topPadding = Math.max(24, Math.round(sHeight * 0.12));
+
+  const selfieWithHeadroom = await sharp(normalizedSelfie)
+    .extend({
+      top: topPadding,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      extendWith: "copy"
+    })
+    .resize(512, 512, { fit: "cover", position: "top" })
+    .toBuffer();
+
+  const resizedWig = await sharp(normalizedWig)
+    .resize(512, 512, { fit: "contain", background: { r: 255, g: 255, b: 255, alpha: 1 } })
+    .toBuffer();
 
   const compositeBuffer = await sharp({
     create: {
@@ -198,13 +218,14 @@ async function generateWithOpenAI({
       background: { r: 255, g: 255, b: 255, alpha: 1 }
     }
   }).composite([
-    { input: resizedSelfie, left: 0, top: 0 },
+    { input: selfieWithHeadroom, left: 0, top: 0 },
     { input: resizedWig, left: 512, top: 0 }
   ]).png().toBuffer();
 
   const fullInstruction = `The uploaded image contains two parts: on the left is the target selfie of a woman, and on the right is the reference wig ("${wigName}").
 Transfer only the hairstyle, hair color, texture, volume, and cut line from the reference wig on the right onto the woman's selfie on the left.
-Keep her face, eyes, nose, lips, expression, skin tone, bathrobe, posture, and background 100% identical and unchanged.
+Ensure the entire hairstyle, volume, curls, and crown fit completely and naturally inside the upper frame with comfortable headroom at the top without any cutting off.
+Keep her face, eyes, nose, lips, expression, skin tone, clothing, posture, and background 100% identical and unchanged.
 ${prompt}`;
 
   const formData = new FormData();
@@ -311,7 +332,8 @@ export async function POST(request: Request) {
     const finalPrompt = buildFinalPrompt(universalPrompt, wigId, wigName);
 
     const selfieArrayBuffer = await selfie.arrayBuffer();
-    const selfieBuffer = Buffer.from(selfieArrayBuffer);
+    const rawSelfieBuffer = Buffer.from(selfieArrayBuffer);
+    const selfieBuffer = await sharp(rawSelfieBuffer).rotate().toBuffer();
 
     const wigImageData = await loadWigImageAsBuffer(wigImageSrc);
 

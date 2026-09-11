@@ -71,6 +71,7 @@ export function WigTryOnWidget() {
   const [selfieFile, setSelfieFile] = useState<File | null>(null);
   const [selfiePreviewUrl, setSelfiePreviewUrl] = useState<string | null>(null);
   const [resultImageUrl, setResultImageUrl] = useState<string | null>(null);
+  const [activeResultWig, setActiveResultWig] = useState<WigOption | null>(null);
   const [statusText, setStatusText] = useState("");
   const [errorText, setErrorText] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -177,6 +178,7 @@ export function WigTryOnWidget() {
     setSelfieFile(file);
     setErrorText(null);
     setResultImageUrl(null);
+    setActiveResultWig(null);
 
     if (!file) {
       setSelfiePreviewUrl(null);
@@ -198,7 +200,6 @@ export function WigTryOnWidget() {
 
     setIsLoading(true);
     setErrorText(null);
-    setResultImageUrl(null);
     setStatusText("Генерируем примерку...");
 
     try {
@@ -222,6 +223,7 @@ export function WigTryOnWidget() {
       }
 
       setResultImageUrl(payload.generatedImageUrl);
+      setActiveResultWig(selectedWig);
       setStatusText(`Примерка готова для варианта «${selectedWig.name}».`);
     } catch (error) {
       setErrorText(
@@ -232,6 +234,12 @@ export function WigTryOnWidget() {
       setStatusText("");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleTryAnotherWig = () => {
+    if (catalogSectionRef.current) {
+      catalogSectionRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
 
@@ -350,10 +358,12 @@ export function WigTryOnWidget() {
               isLoading={isLoading}
               resultImageUrl={resultImageUrl}
               selectedWig={selectedWig}
+              activeResultWig={activeResultWig}
               statusText={statusText}
               errorText={errorText}
               isActionDisabled={isSubmitDisabled}
               onGenerate={handleGenerate}
+              onTryAnotherWig={handleTryAnotherWig}
             />
           </div>
         </div>

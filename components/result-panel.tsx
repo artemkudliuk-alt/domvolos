@@ -8,26 +8,35 @@ type ResultPanelProps = {
   isLoading: boolean;
   resultImageUrl: string | null;
   selectedWig: WigOption | null;
+  activeResultWig?: WigOption | null;
   statusText: string;
   errorText: string | null;
   isActionDisabled: boolean;
   onGenerate: () => void;
+  onTryAnotherWig?: () => void;
 };
 
 export function ResultPanel({
   isLoading,
   resultImageUrl,
   selectedWig,
+  activeResultWig,
   statusText,
   errorText,
   isActionDisabled,
-  onGenerate
+  onGenerate,
+  onTryAnotherWig
 }: ResultPanelProps) {
+  const currentWig = activeResultWig || selectedWig;
+  const isDifferentWigSelected = Boolean(
+    resultImageUrl && selectedWig && activeResultWig && selectedWig.id !== activeResultWig.id
+  );
+
   const handleDownload = () => {
     if (!resultImageUrl) return;
     const a = document.createElement("a");
     a.href = resultImageUrl;
-    a.download = `dom-volos-try-on-${selectedWig?.id ?? "result"}.png`;
+    a.download = `dom-volos-try-on-${currentWig?.id ?? "result"}.png`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -74,12 +83,29 @@ export function ResultPanel({
           <ResultLoadingCard />
         ) : resultImageUrl ? (
           <div className="space-y-4 animate-result-reveal">
+            {/* Quick action bar when user selected another wig from catalog */}
+            {isDifferentWigSelected && selectedWig ? (
+              <div className="rounded-2xl border border-emerald-200 bg-emerald-50/95 p-3.5 text-center shadow-xs animate-fade-in-up">
+                <p className="text-xs text-emerald-950">
+                  Вы выбрали новый парик: <strong className="font-semibold">«{selectedWig.name}»</strong>
+                </p>
+                <button
+                  type="button"
+                  onClick={onGenerate}
+                  disabled={isLoading}
+                  className="mt-2.5 w-full inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-ink px-5 text-xs sm:text-sm font-medium text-white shadow-md transition-all duration-200 hover:bg-slate-800 active:scale-98 cursor-pointer"
+                >
+                  <span>Примерить «{selectedWig.name}» ✨</span>
+                </button>
+              </div>
+            ) : null}
+
             <div className="relative aspect-[3/4] overflow-hidden rounded-[28px] border border-line bg-mist shadow-[0_20px_48px_rgba(17,24,39,0.12)]">
               <Image
                 src={resultImageUrl}
                 alt="Результат примерки"
                 fill
-                className="object-cover"
+                className="object-cover object-top"
                 sizes="(max-width: 1024px) 100vw, 420px"
                 unoptimized
               />
@@ -88,31 +114,53 @@ export function ResultPanel({
               </div>
             </div>
 
-            <div className="flex flex-col gap-2.5 sm:flex-row">
-              <button
-                type="button"
-                onClick={handleDownload}
-                className="flex-1 inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-5 text-xs font-medium text-slate-700 shadow-xs transition-all duration-200 hover:bg-slate-50 hover:text-ink active:scale-95"
-              >
-                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-                Скачать фото
-              </button>
-
-              {selectedWig?.href ? (
+            <div className="space-y-2.5">
+              {/* ACCENTUATED & ENLARGED 1-CLICK BUY BUTTON */}
+              {currentWig?.href ? (
                 <a
-                  href={selectedWig.href}
+                  href={currentWig.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 inline-flex min-h-11 items-center justify-center gap-1.5 rounded-full bg-emerald-600 px-5 text-xs font-medium text-white shadow-xs transition-all duration-200 hover:bg-emerald-700 active:scale-95"
+                  className="w-full inline-flex min-h-14 items-center justify-center gap-2.5 rounded-full bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 px-6 text-sm sm:text-base font-semibold text-white shadow-[0_12px_28px_rgba(16,185,129,0.32)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_16px_36px_rgba(16,185,129,0.42)] active:scale-[0.98] select-none cursor-pointer"
                 >
+                  <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                  </svg>
                   <span>Купить в 1 клик</span>
-                  <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  {currentWig.price ? (
+                    <span className="rounded-full bg-white/25 px-2.5 py-0.5 text-xs font-bold text-white tracking-wide">
+                      {currentWig.price}
+                    </span>
+                  ) : null}
+                  <svg className="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
                 </a>
               ) : null}
+
+              {/* SECONDARY ROW: Download & Try Another Wig */}
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <button
+                  type="button"
+                  onClick={handleDownload}
+                  className="flex-1 inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-xs font-medium text-slate-700 shadow-xs transition-all duration-200 hover:bg-slate-50 hover:text-ink active:scale-95 cursor-pointer"
+                >
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                  Скачать фото
+                </button>
+
+                {onTryAnotherWig ? (
+                  <button
+                    type="button"
+                    onClick={onTryAnotherWig}
+                    className="flex-1 inline-flex min-h-11 items-center justify-center gap-1.5 rounded-full border border-slate-200 bg-white px-4 text-xs font-medium text-slate-700 shadow-xs transition-all duration-200 hover:bg-slate-50 hover:text-ink active:scale-95 cursor-pointer"
+                  >
+                    <span>Выбрать другой парик 💇‍♀️</span>
+                  </button>
+                ) : null}
+              </div>
             </div>
           </div>
         ) : (
