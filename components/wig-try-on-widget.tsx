@@ -264,7 +264,7 @@ export function WigTryOnWidget() {
           <h1 className="text-[38px] font-extralight tracking-[-0.055em] text-ink sm:text-[48px] lg:text-[54px]">
             Примерка парика
           </h1>
-          <p className="text-sm font-light text-slate-500 sm:text-[15px]">
+          <p className="text-base font-light text-slate-500 sm:text-[16px]">
             Загрузите селфи и выберите парик из каталога для онлайн-примерки
           </p>
         </header>
@@ -284,15 +284,15 @@ export function WigTryOnWidget() {
           {/* Left Column: Wig Catalog (7 Cols) */}
           <section
             ref={catalogSectionRef}
-            className="lg:col-span-7 flex flex-col justify-between rounded-[34px] border border-white/75 bg-white/80 p-5 shadow-[0_18px_48px_rgba(17,24,39,0.06)] backdrop-blur-xl sm:p-6"
+            className="lg:col-span-7 min-w-0 flex flex-col justify-between rounded-[34px] border border-white/75 bg-white/80 p-5 shadow-[0_18px_48px_rgba(17,24,39,0.06)] backdrop-blur-xl sm:p-6"
           >
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-[20px] font-light tracking-[-0.03em] text-ink sm:text-[24px]">
+                <h2 className="text-[22px] font-light tracking-[-0.03em] text-ink sm:text-[26px]">
                   Каталог париков ({products.length})
                 </h2>
                 {isProductsLoading && (
-                  <span className="text-xs text-slate-400 animate-pulse">
+                  <span className="text-sm text-slate-400 animate-pulse">
                     Загрузка каталога...
                   </span>
                 )}
@@ -322,7 +322,7 @@ export function WigTryOnWidget() {
                   ))}
                 </div>
               ) : products.length === 0 ? (
-                <div className="py-12 text-center text-slate-400 text-sm">
+                <div className="py-12 text-center text-slate-400 text-base">
                   В этой категории пока нет доступных товаров.
                 </div>
               ) : (
@@ -353,7 +353,7 @@ export function WigTryOnWidget() {
           </section>
 
           {/* Right Column: Studio Result Mirror (5 Cols) */}
-          <div className="lg:col-span-5">
+          <div className="lg:col-span-5 min-w-0">
             <ResultPanel
               isLoading={isLoading}
               resultImageUrl={resultImageUrl}

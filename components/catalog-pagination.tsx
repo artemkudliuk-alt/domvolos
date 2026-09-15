@@ -39,7 +39,7 @@ export function CatalogPagination({
 
   return (
     <div className="flex flex-col items-center justify-between gap-3 pt-4 sm:flex-row border-t border-slate-100">
-      <div className="text-xs font-light text-slate-500">
+      <div className="text-sm font-light text-slate-500">
         Показано <span className="font-medium text-slate-700">{startItem}–{endItem}</span> из{" "}
         <span className="font-medium text-slate-700">{totalItems}</span> товаров
       </div>
@@ -50,7 +50,7 @@ export function CatalogPagination({
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
           className={[
-            "inline-flex h-9 items-center justify-center rounded-full px-3 text-xs font-light tracking-wide transition-all duration-200 active:scale-95",
+            "inline-flex h-9 items-center justify-center rounded-full px-3 text-sm font-light tracking-wide transition-all duration-200 active:scale-95",
             currentPage === 1
               ? "cursor-not-allowed text-slate-300"
               : "text-slate-600 hover:bg-slate-100 hover:text-ink"
@@ -64,7 +64,7 @@ export function CatalogPagination({
           {pages.map((p, idx) => {
             if (p === "...") {
               return (
-                <span key={`ellipsis-${idx}`} className="px-1 text-xs text-slate-400 select-none">
+                <span key={`ellipsis-${idx}`} className="px-1 text-sm text-slate-400 select-none">
                   ...
                 </span>
               );
@@ -78,7 +78,7 @@ export function CatalogPagination({
                 type="button"
                 onClick={() => onPageChange(p)}
                 className={[
-                  "flex h-8 w-8 items-center justify-center rounded-full text-xs font-medium transition-all duration-200 active:scale-95",
+                  "flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium transition-all duration-200 active:scale-95",
                   isActive
                     ? "bg-ink text-white shadow-sm"
                     : "text-slate-600 hover:bg-slate-100 hover:text-ink"
@@ -96,7 +96,7 @@ export function CatalogPagination({
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
           className={[
-            "inline-flex h-9 items-center justify-center rounded-full px-3 text-xs font-light tracking-wide transition-all duration-200 active:scale-95",
+            "inline-flex h-9 items-center justify-center rounded-full px-3 text-sm font-light tracking-wide transition-all duration-200 active:scale-95",
             currentPage === totalPages
               ? "cursor-not-allowed text-slate-300"
               : "text-slate-600 hover:bg-slate-100 hover:text-ink"

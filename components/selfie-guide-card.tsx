@@ -5,10 +5,10 @@ export function SelfieGuideCard() {
     <section className="rounded-[30px] border border-white/70 bg-white/78 p-5 shadow-[0_18px_48px_rgba(17,24,39,0.06)] backdrop-blur sm:p-6">
       <div className="grid gap-5 md:grid-cols-[minmax(0,1fr)_180px] md:items-center">
         <div className="space-y-3">
-          <h2 className="text-[19px] font-light tracking-[-0.03em] text-ink sm:text-[22px]">
+          <h2 className="text-[21px] font-light tracking-[-0.03em] text-ink sm:text-[24px]">
             Как сделать фото
           </h2>
-          <p className="max-w-[42rem] text-sm font-light leading-7 text-slate-600 sm:text-[15px]">
+          <p className="max-w-[42rem] text-base font-light leading-7 text-slate-600 sm:text-[16px]">
             Сделайте фото анфас при хорошем освещении, держите голову ровно и не закрывайте лицо волосами.
           </p>
         </div>

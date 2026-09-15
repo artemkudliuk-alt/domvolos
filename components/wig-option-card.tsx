@@ -44,7 +44,7 @@ export function WigOptionCard({
         />
 
         {wig.price && (
-          <div className="absolute top-2.5 right-2.5 rounded-full bg-ink/80 px-2.5 py-1 text-[11px] font-medium tracking-wide text-white backdrop-blur shadow-sm transition-transform duration-200 group-hover:scale-105">
+          <div className="absolute top-2.5 right-2.5 rounded-full bg-ink/80 px-2.5 py-1 text-[13px] font-medium tracking-wide text-white backdrop-blur shadow-sm transition-transform duration-200 group-hover:scale-105">
             {wig.special ? (
               <span>
                 <span className="line-through opacity-70 mr-1.5">{wig.price}</span>
@@ -83,7 +83,7 @@ export function WigOptionCard({
       </div>
 
       <div className="flex items-center justify-between gap-2.5 px-3.5 py-3">
-        <span className="line-clamp-2 text-xs font-medium tracking-[0.01em] text-slate-800 leading-tight">
+        <span className="line-clamp-2 text-sm font-medium tracking-[0.01em] text-slate-800 leading-tight">
           {wig.name}
         </span>
         <span

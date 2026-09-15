@@ -21,7 +21,7 @@ export function SelfieHeaderSection({
   const cameraId = `${baseId}-camera`;
 
   const baseButtonClass = [
-    "inline-flex min-h-11 items-center justify-center gap-2 rounded-full border px-5 text-xs sm:text-sm font-light tracking-[0.01em] transition-all duration-200 cursor-pointer select-none active:scale-[0.98]",
+    "inline-flex min-h-11 items-center justify-center gap-2 rounded-full border px-5 text-sm sm:text-base font-light tracking-[0.01em] transition-all duration-200 cursor-pointer select-none active:scale-[0.98]",
     disabled
       ? "cursor-not-allowed border-line bg-slate-100 text-slate-400"
       : "border-slate-200/90 bg-white text-ink hover:-translate-y-0.5 hover:border-ink/25 hover:bg-white hover:shadow-[0_8px_20px_rgba(17,24,39,0.06)]"
@@ -31,8 +31,8 @@ export function SelfieHeaderSection({
     <section className="rounded-[32px] border border-white/75 bg-white/82 p-5 shadow-[0_18px_48px_rgba(17,24,39,0.06)] backdrop-blur-xl sm:p-6 transition-all duration-300 hover:shadow-[0_22px_56px_rgba(17,24,39,0.08)]">
       <div className="grid gap-6 lg:grid-cols-12 lg:items-center">
         {/* Left Side: Guide & Sample Photo */}
-        <div className="lg:col-span-7 flex items-center gap-4 border-b border-slate-100 pb-5 lg:border-b-0 lg:border-r lg:pb-0 lg:pr-6">
-          <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-xs sm:h-24 sm:w-24">
+        <div className="lg:col-span-7 min-w-0 flex flex-col items-start gap-4 border-b sm:flex-row sm:gap-5 border-slate-100 pb-5 lg:border-b-0 lg:border-r lg:pb-0 lg:pr-6">
+          <div className="relative h-32 w-32 shrink-0 overflow-hidden rounded-[22px] border border-slate-200/80 bg-white shadow-sm sm:h-40 sm:w-40">
             <Image
               src="/guide/selfie-guide.png"
               alt="Подсказка для селфи"
@@ -42,38 +42,50 @@ export function SelfieHeaderSection({
             />
           </div>
 
-          <div className="space-y-2">
-            <h2 className="text-[18px] font-light tracking-[-0.03em] text-ink sm:text-[20px]">
+          <div className="min-w-0 space-y-3">
+            <h2 className="text-[21px] font-light tracking-[-0.03em] text-ink sm:text-[23px]">
               Памятка для идеальной примерки
             </h2>
-            <div className="flex flex-wrap gap-1.5 sm:gap-2 pt-0.5">
-              <span className="inline-flex items-center gap-1 rounded-full border border-slate-200/80 bg-slate-50/90 px-2.5 py-1 text-[11px] font-normal text-slate-700 shadow-2xs">
-                ☀️ Хорошее освещение
-              </span>
-              <span className="inline-flex items-center gap-1 rounded-full border border-slate-200/80 bg-slate-50/90 px-2.5 py-1 text-[11px] font-normal text-slate-700 shadow-2xs">
-                🧢 Без головных уборов
-              </span>
-              <span className="inline-flex items-center gap-1 rounded-full border border-slate-200/80 bg-slate-50/90 px-2.5 py-1 text-[11px] font-normal text-slate-700 shadow-2xs">
-                👓 Без очков
-              </span>
-              <span className="inline-flex items-center gap-1 rounded-full border border-slate-200/80 bg-slate-50/90 px-2.5 py-1 text-[11px] font-normal text-slate-700 shadow-2xs">
-                👤 Лицо прямо по центру
-              </span>
-            </div>
+            <ul className="space-y-2">
+              <li className="flex items-start gap-2">
+                <svg className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M5 13l4 4L19 7" /></svg>
+                <span className="text-[16px] font-normal leading-snug text-slate-700 sm:text-[17px]">
+                  Хорошее освещение
+                </span>
+              </li>
+              <li className="flex items-start gap-2">
+                <svg className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M5 13l4 4L19 7" /></svg>
+                <span className="text-[16px] font-normal leading-snug text-slate-700 sm:text-[17px]">
+                  Без головных уборов
+                </span>
+              </li>
+              <li className="flex items-start gap-2">
+                <svg className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M5 13l4 4L19 7" /></svg>
+                <span className="text-[16px] font-normal leading-snug text-slate-700 sm:text-[17px]">
+                  Без очков
+                </span>
+              </li>
+              <li className="flex items-start gap-2">
+                <svg className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M5 13l4 4L19 7" /></svg>
+                <span className="text-[16px] font-normal leading-snug text-slate-700 sm:text-[17px]">
+                  Лицо прямо по центру
+                </span>
+              </li>
+            </ul>
           </div>
         </div>
 
         {/* Right Side: Upload Controls */}
-        <div className="lg:col-span-5 space-y-3">
+        <div className="lg:col-span-5 min-w-0 space-y-3">
           <div className="flex items-center justify-between gap-2">
-            <h2 className="text-[18px] font-light tracking-[-0.03em] text-ink sm:text-[20px]">
+            <h2 className="text-[21px] font-light tracking-[-0.03em] text-ink sm:text-[23px]">
               Ваше фото
             </h2>
 
             {hasFile ? (
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 animate-fade-in-up">
-                <span className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-600 text-[10px] text-white">
-                  ✓
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-sm font-medium text-emerald-700 animate-fade-in-up">
+                <span className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-600 text-[12px] text-white">
+                  <svg className="h-2.5 w-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3.5} d="M5 13l4 4L19 7" /></svg>
                 </span>
                 Загружено
               </span>

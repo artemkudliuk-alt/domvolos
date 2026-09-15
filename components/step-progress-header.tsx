@@ -17,11 +17,11 @@ export function StepProgressHeader({
   const step3State = hasResult ? "completed" : hasSelfie && hasWig ? "active" : "upcoming";
 
   return (
-    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[9999] flex max-w-fit items-center justify-center gap-1.5 rounded-full border border-white/90 bg-white/95 px-3.5 py-2 shadow-[0_14px_40px_rgba(17,24,39,0.15)] backdrop-blur-xl transition-all duration-300 sm:gap-2.5 sm:px-6 sm:py-2.5">
+    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[9999] flex max-w-fit items-center justify-center gap-1.5 max-[399px]:gap-1 rounded-full border border-white/90 bg-white/95 px-3.5 max-[399px]:px-2 py-2 shadow-[0_14px_40px_rgba(17,24,39,0.15)] backdrop-blur-xl transition-all duration-300 sm:gap-2.5 sm:px-6 sm:py-2.5">
       {/* Step 1: Selfie */}
       <div
         className={[
-          "flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-all duration-300 sm:text-sm",
+          "flex items-center gap-1.5 rounded-full px-3 max-[359px]:px-2 py-1 text-sm max-[359px]:text-[13px] font-medium transition-all duration-300 sm:text-base",
           step1State === "completed"
             ? "bg-emerald-50 text-emerald-700 border border-emerald-200/80 shadow-xs"
             : step1State === "active"
@@ -30,23 +30,23 @@ export function StepProgressHeader({
         ].join(" ")}
       >
         {step1State === "completed" ? (
-          <span className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-bold text-white shadow-xs">
-            ✓
+          <span className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[12px] font-bold text-white shadow-xs">
+            <svg className="h-2.5 w-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3.5} d="M5 13l4 4L19 7" /></svg>
           </span>
         ) : (
-          <span className="flex h-4 w-4 items-center justify-center rounded-full bg-black/10 text-[10px] font-semibold">
+          <span className="flex h-4 w-4 items-center justify-center rounded-full bg-black/10 text-[12px] font-semibold">
             1
           </span>
         )}
         <span>Фото</span>
       </div>
 
-      <span className="text-slate-300 text-xs sm:text-sm">→</span>
+      <span className="max-[399px]:hidden text-slate-300 text-sm sm:text-base">→</span>
 
       {/* Step 2: Wig Selection */}
       <div
         className={[
-          "flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-all duration-300 sm:text-sm",
+          "flex items-center gap-1.5 rounded-full px-3 max-[359px]:px-2 py-1 text-sm max-[359px]:text-[13px] font-medium transition-all duration-300 sm:text-base",
           step2State === "completed"
             ? "bg-emerald-50 text-emerald-700 border border-emerald-200/80 shadow-xs"
             : step2State === "active"
@@ -55,23 +55,23 @@ export function StepProgressHeader({
         ].join(" ")}
       >
         {step2State === "completed" ? (
-          <span className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-bold text-white shadow-xs">
-            ✓
+          <span className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[12px] font-bold text-white shadow-xs">
+            <svg className="h-2.5 w-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3.5} d="M5 13l4 4L19 7" /></svg>
           </span>
         ) : (
-          <span className="flex h-4 w-4 items-center justify-center rounded-full bg-slate-200 text-[10px] font-semibold text-slate-600">
+          <span className="flex h-4 w-4 items-center justify-center rounded-full bg-slate-200 text-[12px] font-semibold text-slate-600">
             2
           </span>
         )}
         <span>Парик</span>
       </div>
 
-      <span className="text-slate-300 text-xs sm:text-sm">→</span>
+      <span className="max-[399px]:hidden text-slate-300 text-sm sm:text-base">→</span>
 
       {/* Step 3: Try-On Result */}
       <div
         className={[
-          "flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-all duration-300 sm:text-sm",
+          "flex items-center gap-1.5 rounded-full px-3 max-[359px]:px-2 py-1 text-sm max-[359px]:text-[13px] font-medium transition-all duration-300 sm:text-base",
           step3State === "completed"
             ? "bg-emerald-50 text-emerald-700 border border-emerald-200/80 shadow-xs"
             : step3State === "active"
@@ -80,11 +80,11 @@ export function StepProgressHeader({
         ].join(" ")}
       >
         {step3State === "completed" ? (
-          <span className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-bold text-white shadow-xs">
-            ✓
+          <span className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[12px] font-bold text-white shadow-xs">
+            <svg className="h-2.5 w-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3.5} d="M5 13l4 4L19 7" /></svg>
           </span>
         ) : (
-          <span className="flex h-4 w-4 items-center justify-center rounded-full bg-slate-200 text-[10px] font-semibold text-slate-600">
+          <span className="flex h-4 w-4 items-center justify-center rounded-full bg-slate-200 text-[12px] font-semibold text-slate-600">
             3
           </span>
         )}

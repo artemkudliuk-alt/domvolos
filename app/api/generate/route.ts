@@ -186,57 +186,33 @@ async function generateWithOpenAI({
   selfieBuffer: Buffer;
   wigBuffer: Buffer;
 }): Promise<{ base64: string; mimeType: string }> {
-  // 1. Auto-orient images to fix iPhone 90° EXIF rotation bug
-  const normalizedSelfie = await sharp(selfieBuffer).rotate().toBuffer();
-  const normalizedWig = await sharp(wigBuffer).rotate().toBuffer();
-
-  // 2. Add smart top headroom padding so tall, voluminous wigs are never cut off at the top
-  const selfieMeta = await sharp(normalizedSelfie).metadata();
-  const sHeight = selfieMeta.height ?? 512;
-  const topPadding = Math.max(24, Math.round(sHeight * 0.12));
-
-  const selfieWithHeadroom = await sharp(normalizedSelfie)
-    .extend({
-      top: topPadding,
-      bottom: 0,
-      left: 0,
-      right: 0,
-      extendWith: "copy"
-    })
-    .resize(512, 512, { fit: "cover", position: "top" })
+  // Auto-orient (iPhone stores sensor-landscape pixels plus an EXIF orientation tag)
+  // and cap the long edge so a 12MP photo stays well under the 50MB per-image API limit.
+  const selfiePng = await sharp(selfieBuffer)
+    .rotate()
+    .resize({ width: 1024, height: 1536, fit: "inside", withoutEnlargement: true })
+    .png()
     .toBuffer();
 
-  const resizedWig = await sharp(normalizedWig)
-    .resize(512, 512, { fit: "contain", background: { r: 255, g: 255, b: 255, alpha: 1 } })
+  const wigPng = await sharp(wigBuffer)
+    .rotate()
+    .resize({ width: 1024, height: 1024, fit: "inside", withoutEnlargement: true })
+    .png()
     .toBuffer();
 
-  const compositeBuffer = await sharp({
-    create: {
-      width: 1024,
-      height: 512,
-      channels: 4,
-      background: { r: 255, g: 255, b: 255, alpha: 1 }
-    }
-  }).composite([
-    { input: selfieWithHeadroom, left: 0, top: 0 },
-    { input: resizedWig, left: 512, top: 0 }
-  ]).png().toBuffer();
-
-  const fullInstruction = `The uploaded image contains two parts: on the left is the target selfie of a woman, and on the right is the reference wig ("${wigName}").
-Transfer only the hairstyle, hair color, texture, volume, and cut line from the reference wig on the right onto the woman's selfie on the left.
-Ensure the entire hairstyle, volume, curls, and crown fit completely and naturally inside the upper frame with comfortable headroom at the top without any cutting off.
-Keep her face, eyes, nose, lips, expression, skin tone, clothing, posture, and background 100% identical and unchanged.
+  const fullInstruction = `The first image is the target selfie of a woman. The second image is a reference photo of the wig "${wigName}" on a mannequin.
+Edit the first image only: replace the woman's hair with the hairstyle, hair color, texture, volume, and cut line of the wig from the second image.
+Fit the hairstyle naturally to her head shape, centred and symmetrical, and keep the whole hairstyle including the crown and any volume inside the frame without cutting off.
+Do not copy the mannequin, its stand, or the second image's background into the result.
+Keep her face, eyes, nose, lips, expression, skin tone, clothing, posture, framing, and background 100% identical and unchanged.
 ${prompt}`;
 
   const formData = new FormData();
-  formData.append("model", "gpt-image-2");
-  formData.append(
-    "image",
-    new Blob([new Uint8Array(compositeBuffer)], { type: "image/png" }),
-    "composite.png"
-  );
+  formData.append("model", model);
+  formData.append("image[]", new Blob([new Uint8Array(selfiePng)], { type: "image/png" }), "selfie.png");
+  formData.append("image[]", new Blob([new Uint8Array(wigPng)], { type: "image/png" }), "wig-reference.png");
   formData.append("prompt", fullInstruction);
-  formData.append("size", "1024x1024");
+  formData.append("size", "1024x1536");
 
   const res = await fetch("https://api.openai.com/v1/images/edits", {
     method: "POST",
@@ -265,21 +241,7 @@ ${prompt}`;
     throw new Error("OpenAI API не вернул изображение.");
   }
 
-  // Crop out the edited selfie from the composite result (left half)
-  const resultBuf = Buffer.from(rawB64, "base64");
-  const resultMeta = await sharp(resultBuf).metadata();
-  const resWidth = resultMeta.width ?? 1024;
-  const resHeight = resultMeta.height ?? 512;
-
-  let croppedBuf: Buffer = resultBuf;
-  if (resWidth > resHeight) {
-    const extracted = await sharp(resultBuf)
-      .extract({ left: 0, top: 0, width: Math.floor(resWidth / 2), height: resHeight })
-      .toBuffer();
-    croppedBuf = Buffer.from(extracted);
-  }
-
-  return { base64: croppedBuf.toString("base64"), mimeType: "image/png" };
+  return { base64: rawB64, mimeType: "image/png" };
 }
 
 export async function POST(request: Request) {
